@@ -1,16 +1,5 @@
 import random
 
-tam_poblacion = int(input("Tam poblacion: "))
-poblacion = []
-count = 0
-
-#Llenar poblacion 
-while(count < tam_poblacion):
-   poblacion.append(genera_individuo())
-   count += 1
-
-print(poblacion)
-
 #Funcion para generar individuo
 def genera_individuo():
     count = 0
@@ -21,3 +10,14 @@ def genera_individuo():
         count += 1
     
     return individuo
+
+tam_poblacion = int(input("Tam poblacion: "))
+poblacion = []
+count = 0
+
+#Llenar poblacion 
+while(count < tam_poblacion):
+   poblacion.append(genera_individuo())
+   count += 1
+
+print(poblacion)
