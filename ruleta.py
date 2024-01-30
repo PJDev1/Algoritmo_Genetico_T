@@ -5,22 +5,29 @@ poblacion = []
 poblacionFitness = []
 count = 0
 
-def ruleta(individuo):
-    recta = range(0, total_sum())
-    section = 0
-    for section in recta:
-        print(section)
-        section += 1
+#Proceso de selección
+def ruleta():
+     #Generar recta
+     recta = list(range(0, sumaTotal() + 1))
+     print(f'Recta: {recta}')
+    #Dividirla en subintervalos
+     valor_previo = 0
+     for i in poblacionFitness:
+         subintervalo=recta[valor_previo:i]
+         print(f'i: {i},prev: {valor_previo},Sub_i: {subintervalo}')
+         valor_previo = i
 
-def total_sum():
+
+def addFitness():
     aux = 0
     while (aux != tam_poblacion):
         poblacionFitness.append(fitness(poblacion[aux]))
         aux += 1
-    totalFitness = sum(poblacionFitness)
-    return totalFitness
+
+def sumaTotal():
+    return sum(poblacionFitness)
     
-def fitness(individuo): #Fitness es un valor: "fitness = 34"
+def fitness(individuo):
     decimal = int(individuo, 2)
     return decimal  
 
@@ -40,5 +47,7 @@ while(count < tam_poblacion):
    poblacion.append(genera_individuo())
    count += 1
 
-
-
+addFitness()
+print(f'Poblacion: {poblacionFitness}')
+print(f'Suma Total: {sumaTotal()+1}')
+ruleta()
