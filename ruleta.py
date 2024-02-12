@@ -43,7 +43,6 @@ def torneo_p(p): #K=¿Cuantos? p = probabilidad
     gen_prob = np.random.sample()
     j = max(two_ind) if gen_prob < p else min(two_ind) 
     l = np.where(Fitness==j)[0][0]
-    print(l)
     return l
 
 #Repetir torneo hasta llenar los individuos deseados
@@ -52,11 +51,15 @@ for i in range(n_indtor):
     selElem = Fitness[torneo_p(0.7)]
     _torlist[i] = selElem
 
-def cruza():
+print(f'_torlist = {_torlist}')
+
+#Cruza
+resCross = np.empty(len(_torlist)*2)
+def onePointCross():
+    for i in range(2):
+        indexParent = _torlist[torneo_p(0.7)]
     
-    
 
 
 
-#Cruza 
 #Mutacion
