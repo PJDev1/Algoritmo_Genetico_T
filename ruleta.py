@@ -1,3 +1,4 @@
+import struct
 import random as rnd 
 import numpy as np
 import math
@@ -5,7 +6,7 @@ import math
 #Poblacion(tam,precision)
 tam_poblacion = int(input("Tam poblacion: "))
 precision = int(input("Digitos de precisión: ")) #k
-n_indtor = int(input("Individuos que pasan por torneo: ")) 
+r = float(input('Porcentaje de cruza: '))
 print("Intervalo de busqueda ")
 a = float(input('a='))
 b = float(input('b='))
@@ -19,12 +20,13 @@ t_ind= int(numeroBits(a,b,precision)+0.5)
 #Poblacion inicial aleatoriamente
 P = np.random.randint(2, size=(tam_poblacion,t_ind))
 
+print(f'P={P}')
 #Convertir a decimal
 dec = np.zeros(tam_poblacion) #Creamos arreglo de ceros
 
 #Llenado del array de zeros
 for i in range(tam_poblacion):
-    dec[i] = int("".join(str(x) for x in P[i]),2) 
+    dec[i] = int("".join(str(x) for x in P[i]),2)
 
 #Calculamos x
 def calcX(a, b, n): #n = tam_individuo
@@ -37,7 +39,7 @@ def fitness():
 
 Fitness = np.zeros(tam_poblacion)
 Fitness = fitness()
-def torneo_p(p): #K=¿Cuantos? p = probabilidad
+def torneo_p(p):
     #seleccionar 2 individuos
     two_ind = rnd.sample(Fitness, 2)
     gen_prob = np.random.sample()
@@ -45,21 +47,30 @@ def torneo_p(p): #K=¿Cuantos? p = probabilidad
     l = np.where(Fitness==j)[0][0]
     return l
 
+#r(pares de cruza)
+cross_r = round((r*tam_poblacion)/2)
+
 #Repetir torneo hasta llenar los individuos deseados
-_torlist = np.empty(n_indtor)
-for i in range(n_indtor):
+_torlist = np.empty(tam_poblacion)
+for i in range(tam_poblacion):
     selElem = Fitness[torneo_p(0.7)]
     _torlist[i] = selElem
 
-print(f'_torlist = {_torlist}')
+
+print(_torlist)
 
 #Cruza
-resCross = np.empty(len(_torlist)*2)
 def onePointCross():
-    for i in range(2):
-        indexParent = _torlist[torneo_p(0.7)]
-    
-
-
-
+    poblacionNueva = []
+    for _ in range(cross_r):
+        punto_cruza = rnd.randint(1, t_ind - 1)
+        print(t_ind,punto_cruza)
+        indexP1 = torneo_prueba(0.7)
+        indexP2 = torneo_prueba(0.7)
+        hijo_1 = P[indexP1][:punto_cruza] + P[indexP2][punto_cruza:]
+        hijo_2 = P[indexP2][:punto_cruza] + P[indexP1][punto_cruza:]
+        poblacionNueva.extend([hijo_1, hijo_2])
+        print(poblacionNueva)
+        
+onePointCross()
 #Mutacion
