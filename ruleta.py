@@ -1,12 +1,13 @@
-import struct
 import random as rnd 
 import numpy as np
 import math
+import matplotlib.pyplot as plt 
+
 
 #Poblacion(tam,precision)
 tam_poblacion = int(input("Tam poblacion: "))
 precision = int(input("Digitos de precisión: ")) #k
-r = float(input('Porcentaje de cruza: '))
+r = float(input('Porcentaje de cruza: ')) 
 print("Intervalo de busqueda ")
 a = float(input('a='))
 b = float(input('b='))
@@ -20,7 +21,6 @@ t_ind= int(numeroBits(a,b,precision)+0.5)
 #Poblacion inicial aleatoriamente
 P = np.random.randint(2, size=(tam_poblacion,t_ind))
 
-print(f'P={P}')
 #Convertir a decimal
 dec = np.zeros(tam_poblacion) #Creamos arreglo de ceros
 
@@ -48,7 +48,8 @@ def torneo_p(p):
     return l
 
 #r(pares de cruza)
-cross_r = round((r*tam_poblacion)/2)
+cross_r = round((r*tam_poblacion)/2) #Indica cuantos pares
+print(f'{cross_r}')
 
 #Repetir torneo hasta llenar los individuos deseados
 _torlist = np.empty(tam_poblacion)
@@ -56,21 +57,36 @@ for i in range(tam_poblacion):
     selElem = Fitness[torneo_p(0.7)]
     _torlist[i] = selElem
 
-
 print(_torlist)
 
 #Cruza
 def onePointCross():
-    poblacionNueva = []
     for _ in range(cross_r):
-        punto_cruza = rnd.randint(1, t_ind - 1)
-        print(t_ind,punto_cruza)
-        indexP1 = torneo_prueba(0.7)
-        indexP2 = torneo_prueba(0.7)
-        hijo_1 = P[indexP1][:punto_cruza] + P[indexP2][punto_cruza:]
-        hijo_2 = P[indexP2][:punto_cruza] + P[indexP1][punto_cruza:]
-        poblacionNueva.extend([hijo_1, hijo_2])
-        print(poblacionNueva)
+        punto_cruza = rnd.randint(0, t_ind-1)
+        print(f'Tamaño del individuo: {t_ind}, Punto de cruza: {punto_cruza}')
+        indexP1 = torneo_p(0.7)
+        indexP2 = torneo_p(0.7)
+
+        #Padres
+        padre_1 = P[indexP1]
+        padre_2 = P[indexP2]
+
+        print(f'IndexP1: {indexP1}, IndexP2: {indexP2}')
+        hijo_1 = np.concatenate([padre_1[:punto_cruza], padre_2[punto_cruza:]])
+        hijo_2 = np.concatenate([padre_2[:punto_cruza], padre_1[punto_cruza:]])
+        print(f'Padre_1: {padre_1}, Padre_2: {padre_2}')
+        print(f'Hijo_1: {hijo_1}')
+        print(f'Hijo_1: {hijo_2}')
+        hijos = np.array((hijo_1,hijo_2))
+
+    return hijos
         
 onePointCross()
+
+
+
+
+
 #Mutacion
+
+
