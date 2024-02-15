@@ -1,16 +1,17 @@
 import random as rnd 
 import numpy as np
 import math
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
 
 #Poblacion(tam,precision)
 tam_poblacion = int(input("Tam poblacion: "))
 precision = int(input("Digitos de precisión: ")) #k
-r = float(input('Porcentaje de cruza: ')) 
 print("Intervalo de busqueda ")
 a = float(input('a='))
 b = float(input('b='))
+r = float(input('Porcentaje de cruza(decimal): ')) 
+m = float(input('Porcentaje de muta(decimal): '))
 
 #Definicion de tamaño de los individuos (n bits)
 def numeroBits(inf, sup, k):
@@ -39,6 +40,7 @@ def fitness():
 
 Fitness = np.zeros(tam_poblacion)
 Fitness = fitness()
+print(Fitness)
 def torneo_p(p):
     #seleccionar 2 individuos
     two_ind = rnd.sample(Fitness, 2)
@@ -48,45 +50,31 @@ def torneo_p(p):
     return l
 
 #r(pares de cruza)
-cross_r = round((r*tam_poblacion)/2) #Indica cuantos pares
-print(f'{cross_r}')
-
-#Repetir torneo hasta llenar los individuos deseados
-_torlist = np.empty(tam_poblacion)
-for i in range(tam_poblacion):
-    selElem = Fitness[torneo_p(0.7)]
-    _torlist[i] = selElem
-
-print(_torlist)
+cross_r = round((r*tam_poblacion)/2) #Indica cuantos pares NECESITO
+print(f'Necesito: {cross_r} par') #2
 
 #Cruza
-def onePointCross():
-    for _ in range(cross_r):
-        punto_cruza = rnd.randint(0, t_ind-1)
-        print(f'Tamaño del individuo: {t_ind}, Punto de cruza: {punto_cruza}')
-        indexP1 = torneo_p(0.7)
-        indexP2 = torneo_p(0.7)
-
-        #Padres
-        padre_1 = P[indexP1]
-        padre_2 = P[indexP2]
-
-        print(f'IndexP1: {indexP1}, IndexP2: {indexP2}')
-        hijo_1 = np.concatenate([padre_1[:punto_cruza], padre_2[punto_cruza:]])
-        hijo_2 = np.concatenate([padre_2[:punto_cruza], padre_1[punto_cruza:]])
-        print(f'Padre_1: {padre_1}, Padre_2: {padre_2}')
-        print(f'Hijo_1: {hijo_1}')
-        print(f'Hijo_1: {hijo_2}')
-        hijos = np.array((hijo_1,hijo_2))
-
+def cruza():
+    punto_cruza = rnd.randint(0, t_ind-1)
+    indexP1 = torneo_p(0.7)
+    indexP2 = torneo_p(0.7)
+    #Padres
+    padre_1 = P[indexP1]
+    padre_2 = P[indexP2]
+    hijo_1 = np.concatenate([padre_1[:punto_cruza], padre_2[punto_cruza:]])
+    hijo_2 = np.concatenate([padre_2[:punto_cruza], padre_1[punto_cruza:]])
+    hijos = np.array((hijo_1,hijo_2))
     return hijos
-        
-onePointCross()
 
-
-
-
+poblacionNueva = np.empty((0,t_ind), dtype=int)
+for i in range(cross_r):
+    parHijos = cruza() #Arreglo con 2 arreglos dentro
+    poblacionNueva = np.append(poblacionNueva, parHijos, axis=0)
+    
+print(f'NewP_array: \n{poblacionNueva}') 
 
 #Mutacion
-
-
+def mutacion():
+    randInd = rnd.choice(poblacionNueva) #Seleccion de individuo de forma aleatoria de la poblacion
+    
+    
