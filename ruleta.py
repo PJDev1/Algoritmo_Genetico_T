@@ -37,6 +37,18 @@ def calcX(a, b, n): #n = tam_individuo
 def fitness():
     return [x*math.sin(10*math.pi*x)+1 for x in calcX(a, b, t_ind)]
 
+def nSeleccionD():
+    return round((1-r)*tam_poblacion)
+
+def paseDirecto():
+    for x in range(seleccion):
+        for x in pctFitness:
+            if nr <= x:
+                indice = pctFitness.index(x) #Saca el indice de la posicion de la ruleta para seleccionar el individuo de la poblacion original
+                pobNueva.append(pob[indice]) #Individuo seleccionado pasa directamente a la nueva poblacion
+                break
+
+        print("Individuo seleccionado de la poblacion original por su indice ----------->", indice, "\n")
 
 Fitness = np.zeros(tam_poblacion)
 Fitness = fitness()
@@ -66,15 +78,31 @@ def cruza():
     hijos = np.array((hijo_1,hijo_2))
     return hijos
 
+
+#Sacamos los n hijos necesarios y los metemos a la nueva poblacion
 poblacionNueva = np.empty((0,t_ind), dtype=int)
 for i in range(cross_r):
     parHijos = cruza() #Arreglo con 2 arreglos dentro
     poblacionNueva = np.append(poblacionNueva, parHijos, axis=0)
     
-print(f'NewP_array: \n{poblacionNueva}') 
+print(f'NewP_array: \n{poblacionNueva}')
+
+i = 0
+n_pase_directo = nSeleccionD()
+print(f"Mientras {i} != {n_pase_directo}")
+while( i != n_pase_directo):
+    print("i=",i)
+    rand_ind = rnd.choice(P)
+    print(f'rand_ind_type = {type(rand_ind)}')
+    print(f'Nuevo individuo = ',rand_ind)
+    poblacionNueva = np.append(poblacionNueva, rand_ind)
+    i+=1
+print(f'Entraron {i} individuos nuevos a la población.')
+print(f'{i} de P. original + {r*10} por cruza')
 
 #Mutacion
 def mutacion():
     randInd = rnd.choice(poblacionNueva) #Seleccion de individuo de forma aleatoria de la poblacion
     
+
     
