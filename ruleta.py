@@ -12,7 +12,7 @@ a = float(input('a='))
 b = float(input('b='))
 r = float(input('Porcentaje de cruza(decimal): ')) 
 m = float(input('Porcentaje de muta(decimal): '))
-threshold = int(input('Ingrese n iteraciones: ')) 
+threshold = int(input('Ingrese n iteraciones: '))
 
 #Definicion de tamaño de los individuos (n bits)
 def numeroBits(inf, sup, k):
