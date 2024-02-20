@@ -100,7 +100,7 @@ while  contador <= threshold:
 r *= 100
 m *= 100
 plt.plot(fitnessPromedio)
-plt.title(f'Tamaño de la poblacion = {len(P)} Porcentaje de cruza {r}% Porcentaje de muta = {m}')
+plt.title(f'Tamaño de la poblacion = {len(P)} Porcentaje de cruza {r}% Porcentaje de muta = {m}%', fontsize = 10)
 plt.xlabel("Número de Iteraciones")
 plt.ylabel("Promedio Fitness")
 plt.show()
