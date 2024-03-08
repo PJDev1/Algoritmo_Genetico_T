@@ -8,10 +8,28 @@ def numeroBits(inf, sup, k):
     return int(math.log2(((sup - inf) * math.pow(10, k)) + 1) + 0.5)
 
 def calcX(a, b, n):
-    return [a + dec[i] * ((b - a) / (math.pow(2, n) - 1)) for i in range(tam_poblacion)]
+    return [a + dec_x[i] * ((b - a) / (math.pow(2, n) - 1)) for i in range(tam_poblacion)]
 
-def fitness():
-    return [x * math.sin(10 * math.pi * x) + 1 for x in calcX(a, b, t_ind)]
+def calcY(a, b, n):
+    return [a + dec_y[i] * ((b - a) / (math.pow(2, n) - 1)) for i in range(tam_poblacion)]
+
+def fitness_xy():
+    valores_x = calcX(ax,bx, t_ind_x)
+    valores_y = calcY(ay,by,t_ind_y)
+    print(f'Valores de X: {valores_x}')
+    print(f'Valores de Y: {valores_y}')
+    for x in calcX(ax,bx, t_ind_x):
+        for y in calcY(ay,by,t_ind_y):
+            print(f'x:{x}')
+            print(f'y:{y}')
+            valor = ((1 - x) ** 2) * (np.exp(-x ** 2 - (y + 1) ** 2)) - (x - x ** 3 - y ** 3) * (np.exp(-x ** 2 - y ** 2))
+            print(valor)
+            fitness_array = np.append(fitness_array, valor)
+    print(fitness_array) 
+    return fitness_array
+
+# def fitness():
+#     return [x * math.sin(10 * math.pi * x) + 1 for x in calcX(a, b, t_ind)]
 
 def nSeleccionD():
     return round((1 - r) * tam_poblacion)
@@ -46,16 +64,23 @@ def mutacion():
 tam_poblacion = int(input("Tam poblacion: "))
 precision = int(input("Digitos de precisión: "))  # k
 print("Intervalo de busqueda ")
-a = float(input('a='))
-b = float(input('b='))
+ax = float(input('a_x='))
+bx = float(input('b_x='))
+ay = float(input('a_y='))
+by = float(input('a_y='))
 r = float(input('Porcentaje de cruza(decimal): '))
 m = float(input('Porcentaje de muta(decimal): '))
 threshold = int(input('Ingrese n iteraciones: '))
 fitnessPromedio = np.empty((0, threshold))
 probaTorneo = float(input('Probabilidad Torneo: '))
 
-# Cálculo del tamaño de los individuos (n bits)
-t_ind = int(numeroBits(a, b, precision))
+# Cálculo del tamaño de los individuos para x(n bits)
+t_ind_x = int(numeroBits(ax, bx, precision))
+
+# Cálculo del tamaño de los individuos para x(n bits)
+t_ind_y = int(numeroBits(ay, by, precision))
+
+t_ind = t_ind_x + t_ind_y
 
 # Población inicial aleatoria
 P = np.random.randint(2, size=(tam_poblacion, t_ind))
@@ -63,17 +88,18 @@ P = np.random.randint(2, size=(tam_poblacion, t_ind))
 # Parámetros de cruce y mutación
 cross_r = round((r * tam_poblacion) / 2)
 mut_i = round((m * tam_poblacion))
-print(mut_i)
 
 #Ciclar Algoritmo
 contador = 1
 while  contador <= threshold:
-    dec = np.zeros(tam_poblacion)
+    dec_x = np.zeros(tam_poblacion)
+    dec_y = np.zeros(tam_poblacion)
     for i in range(tam_poblacion):
-        dec[i] = int("".join(str(x) for x in P[i]), 2)
+        dec_x[i] = int("".join(str(x) for x in P[i]), 2) #x
+        dec_y[i] = int("".join(str(y) for y in P[i]), 2) #y
 
     Fitness = np.zeros(tam_poblacion)
-    Fitness = fitness()
+    Fitness = fitness_xy()
     
     poblacionNueva = np.empty((0, t_ind), dtype=int)
     n_pase_directo = nSeleccionD()
