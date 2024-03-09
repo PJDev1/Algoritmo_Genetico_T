@@ -72,6 +72,8 @@ while  contador <= threshold:
     for i in range(tam_poblacion):
         dec[i] = int("".join(str(x) for x in P[i]), 2)
 
+    print(f'Decimales:{dec}')
+    print(t_ind)
     Fitness = np.zeros(tam_poblacion)
     Fitness = fitness()
     
@@ -92,7 +94,7 @@ while  contador <= threshold:
         mutacion()
         
     promedio = np.mean(Fitness)
-    print(f'{contador}.-Promedio de fitness: {promedio}')
+    #print(f'{contador}.-Promedio de fitness: {promedio}')
     fitnessPromedio = np.append(fitnessPromedio, promedio)
     P = poblacionNueva
 
