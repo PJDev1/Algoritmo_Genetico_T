@@ -1,116 +1,126 @@
-import random as rnd
-import numpy as np
-import math 
-import matplotlib.pyplot as plt
+import random
+import numpy
+import math
+import matplotlib.pyplot as plt 
 
-def fitness(x,y):
-    return ((1-x)**2)*np.exp((-x**2)-(y+1)**2)-(x-x**3-y**3)*np.exp(-x**2-y**2)
-
-def genPop(a,b):
-    poblacion = []
-    for _ in range(μ):
-        x = rnd.uniform(a,b)
-        y = rnd.uniform(a,b)
-        poblacion.extend([[[x,y],[d_1,d_2]]])
-    return poblacion
+def fitness(poblacion):
+    for individuo in poblacion:
+        x = individuo[0]
+        y = individuo[1]
+        valor = (1 - x) ** 2 * math.exp(-x*2 - (y + 1)**2) - (x - x**3 - y**3) * math.exp(-x**2 - y*2)
+        poblacionFitness.append(valor)
 
 def mutacion():
-    rand_ind = rnd.choice(P)
-    x = rand_ind[0][0]
-    y = rand_ind[0][1]
-    random_normal = rnd.gauss(0,d_1)
-    new_x = x + random_normal
-    new_y = y + random_normal
-    if(new_x < a):
-        new_x = a
-        rand_ind[0][0] = new_x
+    print(f"\nSe agregarán: {ciclo_mutacion} individuos nuevos\n")
+    for _ in range(ciclo_mutacion):
+        randInd = random.choice(P_μ)
+        newInd = (randInd[0] + random.gauss(0,1), randInd[1] + random.gauss(0,1), 1, 1)
         
-    elif(new_x > b):
-        new_x = b
-        rand_ind[0][0] = new_x
-        
-    if(new_y < a):
-        new_y = a
-        rand_ind[0][1] = new_y
-    elif(new_y > b):
-        new_y = b
-        rand_ind[0][1] = new_y
-        
-    print(rand_ind)
-    return rand_ind
-
-    
-μ = int(input("μ: "))
-λ = int(input("λ: "))
-r = float(input("r: "))
-m = 1 - r
-print(f'm: {m}')
-choose_cross = round(r * λ)
-choose_mut = round(m * λ)
-d_1 = 1
-d_2 = 1
-print("Intervalo de busqueda: ")
-a = int(input("a: "))
-b = int(input("b: "))
-threshold = int(input("Iteraciones: "))
-fitnessPromedio = []
-
-P = genPop(a,b)
-
-contador = 0
-while contador < threshold:
-    Fitness = []
-    for individuo in P:
-        x = individuo[0][0]
-        y = individuo[0][1]
-        val_fitness = fitness(x,y)
-        Fitness.append(val_fitness)
+        if newInd[0] < a:
+            newInd = (a, newInd[1], 1, 1)
+        elif newInd[0] > b:
+            newInd = (b, newInd[1], 1, 1)
             
-    #print(f'Lista_Fitness: {Fitness}')
-    print(f'\nTamaño de Poblacion Inicial: {len(P)}')
-    print(f'\nPoblacion inicial: {P}')
-    P_λ = P
-    print(f'Tamaño de Poblacion_λ: {len(P_λ)}')
-    print(f'Nueva población antes de agregar ind mutados: \n{P_λ}')
+        if newInd[1] < a:
+            newInd = (newInd[0],a, 1, 1)
+        elif newInd[1] > b:
+            newInd = (newInd[0],b, 1, 1)
+        P_λ.append(newInd)
+        
+def cruza():
+    for _ in range(ciclo_cruza):
+        ind_1 = random.choice(P_μ)
+        ind_2 = random.choice(P_μ)
+        cruza = (ind_1[0] + ind_2[0]) / 2, (ind_1[1] + ind_2[1]) / 2, (ind_1[2] + ind_2[2]) / 2, (ind_1[3] + ind_2[3]) / 2
+        P_λ.append(cruza)
+
+# >>>>>>> Variables Constantes <<<<<<<<<<<<
+μ = int(input("Valor μ: "))
+λ = int(input("Valor λ: "))
+m = float(input("Valor m: "))
+r = 1 - m
+print(f"Valor r: {r}")
+thresh = int(input("Repeticiones: "))
+print("Intervalo de busqueda:")
+a = int(input("Valor limite inferior a:"))
+b = int(input("Valor limite superior b:"))
+ciclo_mutacion = round(λ * m)
+ciclo_cruza = round(λ * r)
+P_μ = []
+P_λ = []
+poblacionFitness = []
+promedioFitness = []
+bestFitness = []
+
+# Generar la población
+for _ in range(μ):
+    x = random.uniform(a,b)
+    y = random.uniform(a,b)
+    individuo = (x, y, 1, 1)
+    P_μ.append(individuo)
     
-    for _ in range(choose_mut):
-        P_λ.append(mutacion())
-    print(f'\nNueva Población con ind mutados: \n{P_λ}')
-    print(f'\nTamaño de Poblacion_λ con ind mutados: {len(P_λ)}')
-
-    for individuo in P_λ:
-        x = individuo[0][0]
-        y = individuo[0][1]
-        val_fitness = fitness(x,y)
-        if not val_fitness in Fitness:
-            Fitness.append(val_fitness)
-            
-    #print(f'\nLista_Fitness_Update: {sorted(Fitness)}')
+print("\nPoblacion inicial\n")
+for index, individuo in enumerate(P_μ):
+    print(f"Inviduo {index+1}: {individuo}")
     
-    for _ in range(choose_mut):
-        worst_index = Fitness.index(min(Fitness))
-        print(f'index_peor_ind: {worst_index}')
-        print(f'Elemento de P eliminado: {P_λ[worst_index]}')
-        print(f'Elemento de Fitness eliminado: {Fitness[worst_index]}')
-        del P_λ[worst_index]
-        del Fitness[worst_index]
+# Calcular Fitness 
+fitness(P_μ)
 
-    #print(f'New_Fitness: {Fitness}')
-    #print(f'New_Pop: {P_λ}')
+print("\nFitness de la poblacion inicial\n")
+for index, individuo in enumerate(poblacionFitness):
+    print(f"Fitness {index+1}: {individuo}")
     
-    promedio = np.mean(Fitness)
-    #print(f'{contador}.-Promedio de fitness: {promedio}')
-    fitnessPromedio.append(promedio)
-    P = P_λ
+iteraciones = 1
 
-    contador += 1
+while(iteraciones <= thresh):
+    mutacion()
+    cruza()
+    fitness(P_λ)
+    print(f"\nNuevos individuos a entrar a P_μ\n")
+    for index, individuo in enumerate(P_λ):
+        print(f"Individuo {index+1}: {individuo}")
+        
+    P_μ.extend(P_λ)
+    print(f"\nP_λ con nuevos integrantes:\n")
+    for index, individuo in enumerate(P_μ):
+        print(f"Individuo {index+1}: {individuo}")
+    
+    print("\n Unión de individuo con respectivo fitness:\n")
+    P = list(zip(poblacionFitness, P_μ))
+    for index, individuo in enumerate(P):
+        print(f"Individuo {index+1}: {individuo}")
+        
+    print("\n Ordenar elementos segun su fitness \n")
+    P.sort(reverse=True)
+    for index, individuo in enumerate(P):
+        print(f"Individuo {index+1}: {individuo}")
+        
+    print("\n Conservar los mejores individuos \n")
+    P = P[:-λ]
+    for index, individuo in enumerate(P):
+        print(f"Individuo {index+1}: {individuo}")
+        
+    # Limpiamos para evitar que en la siguiente iteracion se añadan elementos no deseados    
+    poblacionFitness.clear()
+    P_λ.clear()
+    P_μ.clear()
+    
+    poblacionFitness = [individuo[0] for individuo in P]
+    P_μ = [individuo[1] for individuo in P]
+    
+    promedio = numpy.mean(poblacionFitness)
+    promedioFitness.append(promedio)
+    
+    best = numpy.amax(poblacionFitness)
+    bestFitness.append(best)
+    
+    iteraciones += 1
+    
+# ----------------------- Graficar ------------------------------
 
-# ---------------------------------------------------------------------------------------------
-r *= 100
-m *= 100
-plt.plot(fitnessPromedio)
-plt.title(f'Tamaño de la poblacion = {μ} Porcentaje de cruza {r}% Porcentaje de muta = {m}%', fontsize = 10)
-plt.xlabel("Número de Iteraciones")
-plt.ylabel("Promedio Fitness")
+bestMax = numpy.amax(bestFitness)
+promMax = numpy.amax(promedioFitness)
+plt.plot(promedioFitness)
+plt.xlabel("Iteraciones")
+plt.ylabel("Fitness")
 plt.show()
-
